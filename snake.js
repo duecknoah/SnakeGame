@@ -103,13 +103,14 @@ function moveEntity(entity) {
 }
 
 function killEntity(entity) {
-  for (let i = 0; i < powerups.length; i ++) {
-    if (powerups[i] === entity) {
-      if (typeof entity['onDeath'] == 'function')
-        entity.onDeath();
-      powerups.splice(i, 1);
-      return;
-    }
+  for (let i = 0; i < powerups.length; i++) {
+    if (powerups[i] !== entity) continue;
+    
+    // Removal of entity
+    if (typeof entity['onDeath'] == 'function')
+      entity.onDeath();
+    powerups.splice(i, 1);
+    return;
   }
 }
 
@@ -135,7 +136,6 @@ function wallCollision() {
     || head.x > arena.width - 1
     || head.y < 0 
     || head.y > arena.height - 1) {
-
     resetGame();
   }
 }
@@ -173,10 +173,13 @@ function powerUpCollision() {
 function resetGame() {
   // Reset game
   player.snake = newSnake();
-  player.score = 0;
+  
+  setScore(0);
+
   powerups = [PowerupMaker.Powerup('apple')];
+  
   moveInterval = moveIntervalOrg;
-  updateScore();
+  
   deathSnd.play();
 }
 
@@ -188,8 +191,7 @@ function appendHead(snake) {
 
 // Draws everything for the game
 function draw() {
-  context.fillStyle = "#003300";
-  context.fillRect(0, 0, canvas.width / context_scale, canvas.height / context_scale);
+  drawBackground();
 
   // Powerups
   for (let i = 0; i < powerups.length; i ++) {
@@ -200,6 +202,10 @@ function draw() {
   drawSnake(player.snake);
 }
 
+function drawBackground() {
+  context.fillStyle = "#003300";
+  context.fillRect(0, 0, canvas.width / context_scale, canvas.height / context_scale);
+}
 // Draws the snake given to the screen
 function drawSnake(snake) {
   for (var i = 0; i < snake.heads.length; i++) {
