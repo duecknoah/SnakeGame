@@ -79,6 +79,28 @@ function moveSnake(snake) {
   snake.hasChangedDir = false; // reset to allow snake to change dir again
 }
 
+function setSnakeDir(snake, dir) {
+  // Don't allow snake to turn around
+  if (dir === getOppositeDir(snake.dir)) return;
+
+  // If snake already has been set to change direction for the next
+  // frame, don't allow snake to change it till then
+  if (snake.hasChangedDir) return;
+
+  snake.dir = dir;
+}
+
+// Returns the opposite direction of the given direction
+function getOppositeDir(dir) {
+  switch(dir) {
+    case 'right': return 'left';
+    case 'left': return 'right';
+    case 'up': return 'down';
+    case 'down': return 'up';
+    default: throw "Invalid direction " + dir;
+  }
+}
+
 function moveHead(head, dir) {
   switch(dir) {
     case 'up':
@@ -318,36 +340,22 @@ document.addEventListener("keydown", event => {
   // Allow player to move snake in left or right
   // relative to its current direction.
 
-  if (!player.snake.hasChangedDir) {
-    switch(event.keyCode) {
-      case 38:
-        // Up arrow
-        if (player.snake.dir !== 'down') {
-          player.snake.dir = 'up';
-          player.snake.hasChangedDir = true;
-        }
-      break;
-      case 40:
-        // Down arrow
-        if (player.snake.dir !== 'up') {
-          player.snake.dir = 'down';
-          player.snake.hasChangedDir = true;
-        }
-      break;
-      case 37: 
-        // Left arrow
-        if (player.snake.dir !== 'right') {
-          player.snake.dir = 'left';
-          player.snake.hasChangedDir = true;
-        }
-      break;
-      case 39:
-        // Right arrow
-        if (player.snake.dir !== 'left') {
-          player.snake.dir = 'right';
-          player.snake.hasChangedDir = true;
-        }
-      break;
-    }
+  switch(event.keyCode) {
+    case 38:
+      // Up arrow
+      setSnakeDir(player.snake, 'up');
+    break;
+    case 40:
+      // Down arrow
+      setSnakeDir(player.snake, 'down');
+    break;
+    case 37: 
+      // Left arrow
+      setSnakeDir(player.snake, 'left');
+    break;
+    case 39:
+      // Right arrow
+      setSnakeDir(player.snake, 'right');
+    break;
   }
 })
