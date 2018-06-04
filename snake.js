@@ -253,56 +253,45 @@ function newSnake() {
 //  onDraw() - runs on draw event of powerup
 const PowerupMaker = {
   Powerup (type, pos = getRandomPosition()) {
-    return this.powerupType[type]({pos});
+    newPowerup = Object.create(this.powerupType[type]);
+    newPowerup.pos = pos;
+    return newPowerup;
   },
 
   powerupType: {
-    apple: ({pos} = {}) => {
-      newApple = Object.create({
-        ent_type: 'apple',
+    apple: {
+      ent_type: 'apple',
 
-        onPickup: function() {
-          appendHead(player.snake);
-          moveEntity(this);
-          player.score ++;
+      onPickup: function() {
+        appendHead(player.snake);
+        moveEntity(this);
 
-          if (player.score % 10 == 0)
-            doingGoodSnd.play();
-          else
-            eatSnd.play();
-          updateScore();
-        },
+        // Updating player score
+        addScore();
+      },
 
-        onDraw: function() {
-          context.fillStyle = "#ff3300";
-          context.fillRect(this.pos.x, this.pos.y, 1, 1);
-        },
-
-      });
-      newApple.pos = pos;
-      return newApple;
+      onDraw: function() {
+        context.fillStyle = "#ff3300";
+        context.fillRect(this.pos.x, this.pos.y, 1, 1);
+      },
     },
     
-    slowdown: ({pos} = {}) => {
-      newSlowdown = Object.create({
-        ent_type: 'slowdown',
+    slowdown: {
+      ent_type: 'slowdown',
 
-        onPickup: function() {
-          moveInterval = 120;
-          setTimeout(() => {
-            moveInterval = moveIntervalOrg;
-          }, 15000);
-          killEntity(this);
-        },
+      onPickup: function() {
+        moveInterval = 120;
+        setTimeout(() => {
+          moveInterval = moveIntervalOrg;
+        }, 15000);
 
-        onDraw: function() {
-          context.fillStyle = "#93b5ea";
-          context.fillRect(this.pos.x, this.pos.y, 1, 1);
-        },
+        killEntity(this);
+      },
 
-      });
-      newSlowdown.pos = pos;
-      return newSlowdown;
+      onDraw: function() {
+        context.fillStyle = "#93b5ea";
+        context.fillRect(this.pos.x, this.pos.y, 1, 1);
+      },
     },
   }
 }
