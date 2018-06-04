@@ -33,15 +33,34 @@ function update(time = 0) {
   requestAnimationFrame(update);
 }
 
+function setScore(score) {
+  player.score = score;
+
+  updateScore();
+}
+
+// Add to players score and update
+function addScore(amt = 1) {
+  setScore(player.score + amt);
+}
+
 function updateScore() {
+  // Update document
   document.getElementById("score").innerText = "Score: " + player.score;
+
+  // Audio for gaining score
+  if (player.score <= 0) return;
+  if (player.score % 10 == 0) {
+    doingGoodSnd.play();
+  } else {
+    eatSnd.play();
+  }
 }
 
 function moveSnake(snake) {
   heads = snake.heads;
 
   for (var i = 0; i < heads.length; i ++) {
-
     // If this is the first head, move it
     if (i === 0) {
       var prevHeadPos = Object.assign({}, heads[i]);
