@@ -21,8 +21,8 @@ const arena = {
 function update(time = 0) {
   const deltaTime = time - lastTime;
   lastTime = time;
-
   moveCounter += deltaTime;
+  
   if (moveCounter > moveInterval) {
     moveCounter = 0;
     moveSnake(player.snake);
